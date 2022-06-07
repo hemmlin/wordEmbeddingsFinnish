@@ -12,10 +12,6 @@ raw_text = file.read(1000000)
 
 file.close()
 
-token_list_test = nltk.word_tokenize(raw_text)
-print(token_list_test[20:60],"\n")
-print("Total tokens : ", len(token_list_test))
-
 def clean_text(
     string: str, 
     punctuations=r'''!()-[]{};:'"\,<>./?@#$%^&*_~''') -> str: #,
@@ -45,11 +41,9 @@ def clean_text(
     return string
 
 
-token_list_sw = clean_text(raw_text)
-print(token_list_sw[20:60],"\n")
-print("Total tokens : ", len(token_list_sw))
+clean_txt = clean_text(raw_text)
 
-token_list = nltk.word_tokenize(token_list_sw)
+token_list = nltk.word_tokenize(clean_txt)
 print(token_list[20:60],"\n")
 print("Total tokens : ", len(token_list))
 
