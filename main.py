@@ -1,4 +1,2 @@
-from gettext import npgettext
 
-
-import numpy npgettext
+import numpy as np
