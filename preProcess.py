@@ -2,9 +2,10 @@ import nltk
 import os
 from nltk.corpus import stopwords
 import re
+from nltk.stem.snowball import SnowballStemmer
 
 #nltk.download('stopwords')
-
+stemmer = SnowballStemmer("finnish")
 finnish_stopwords = stopwords.words('finnish')
 
 file = open(os.getcwd()+ "/archive/data_fin_gutenberg_500.txt","rt")
@@ -38,7 +39,15 @@ def clean_text(
     # Cleaning the whitespaces
     string = re.sub(r'\s+', ' ', string).strip()
 
+    # Stemming the words
+
+    stem_words = []
+    for w in string:
+        stem_words.append(stemmer.stem(w))
+
     return string
+
+
 
 
 clean_txt = clean_text(raw_text)
