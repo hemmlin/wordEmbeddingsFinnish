@@ -28,7 +28,54 @@ def getXYcbow(sentences, window, word_dict, n):
 
     return X, Y
 
-        
+def getXYskipGram(sentences, window, word_dict):
+    
+    word_pairs = []
+
+    for sentence in sentences:
+    
+        # Creating a dictrionary for context
+        for i, word in enumerate(sentence):
+            for w in range(window):
+                
+                if i + w + 1 < len(sentence): 
+                    word_pairs.append([word] + [sentence[(i + 1 + w)]])
+                    
+                if i - w - 1 >= 0:
+                    word_pairs.append([word] + [sentence[(i - w - 1)]])
+                    
+                    
+    n_words = len(word_dict) 
+
+    words = list(word_dict.keys())
+    
+    #Create X and Y by one hot encoding
+    X = []
+    Y = []
+    
+    for i, word_pair in enumerate(word_pairs):
+        # Getting the indices
+        focus_word_i = word_dict.get(word_pair[0])
+        context_word_i = word_dict.get(word_pair[1])
+    
+         
+        X_r = np.zeros(n_words)
+        Y_r = np.zeros(n_words)
+    
+        #The focus word encoding
+        X_r[focus_word_i] = 1
+    
+        #The contexts word encoding 
+        Y_r[context_word_i] = 1
+    
+        # Appending to the main matrices
+        X.append(X_r)
+        Y.append(Y_r)
+    
+    X = np.asarray(X)
+    Y = np.asarray(Y)
+    
+    return X,Y
 
 def cbow(sentences, vocabulary, window, d):
     """This method trains CBOW algorithm based on the inputs
