@@ -87,9 +87,10 @@ def getTextAndVocab(stemming:True):
     print("Total tokens : ", len(token_list))
 
     Vocab=[]
-    for item in stem_words:
-        if not item in Vocab:
-            Vocab.append(item)
+    for sent in token_list:
+        for item in sent:
+            if not item in Vocab:
+                Vocab.append(item)
     print(Vocab[:50])
 
     word_dict = {}
