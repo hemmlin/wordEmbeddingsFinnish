@@ -10,7 +10,7 @@ stemmer = SnowballStemmer("finnish")
 finnish_stopwords = stopwords.words('finnish')
 
 file = open(os.getcwd()+ "/archive/data_fin_gutenberg_500.txt","rt", encoding = 'utf-8')
-raw_text = file.read(1000000)
+raw_text = file.read(100000)
 
 file.close()
 

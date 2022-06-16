@@ -1,5 +1,5 @@
-#from keras.models import Input, Model
-#from keras.layers import Dense
+from keras.models import Input, Model
+from keras.layers import Dense
 import numpy as np
 from tqdm import tqdm
 
@@ -77,18 +77,47 @@ def getXYskipGram(sentences, window, word_dict):
     
     return X,Y
 
-def cbow(sentences, vocabulary, window, d):
+def traincbow(sentences, word_dict, window, d):
     """This method trains CBOW algorithm based on the inputs
         sentences: list of sentences
+        word_dict: dictionary of one hot indices
         window: number of words considered before and after the current word ex.5
         d: dimension of the embedding vectors
     """
-    
-    inp = Input(shape=(X.shape[1],))
-    x = Dense(units=embed_size, activation='linear')(inp)
-    x = Dense(units=Y.shape[1], activation='softmax')(x)
+    n = len(word_dict)
+    X,Y = getXYcbow(sentences,window,word_dict,n)
+    X = np.asarray(X)
+    Y = np.asarray(Y)
+    inp = Input(shape=(np.shape(X)[1],))
+    x = Dense(units=d, activation='linear')(inp)
+    x = Dense(units=np.shape(Y)[1], activation='softmax')(x)
     model = Model(inputs=inp, outputs=x)
     model.compile(loss = 'categorical_crossentropy', optimizer = 'adam')
+
+    # Optimizing the network weights
+    model.fit(
+        x=X, 
+        y=Y, 
+        batch_size=256,
+        epochs=1000,
+        verbose=0
+        )
+
+    # Obtaining the weights from the neural network. 
+    # These are the so called word embeddings
+
+    # The input layer 
+    weights = model.get_weights()[0]
+
+    # Creating a dictionary to store the embeddings in. The key is a unique word and 
+    # the value is the numeric vector
+    embedding_dict = {}
+    for word in list(word_dict.keys()): 
+        embedding_dict.update({
+            word: weights[word_dict.get(word)]
+            })
+
+    return embedding_dict
 
 
 
