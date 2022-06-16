@@ -41,9 +41,6 @@ def clean_text(
 
     # Stemming the words
 
-    stem_words = []
-    for w in string:
-        stem_words.append(stemmer.stem(w))
 
     return string
 
@@ -53,7 +50,16 @@ def clean_text(
 clean_txt = clean_text(raw_text)
 
 token_list = nltk.word_tokenize(clean_txt)
+# Stemming the words
+
+stem_words = []
+for w in token_list:
+    stem_words.append(stemmer.stem(w))
+
 print(token_list[20:60],"\n")
 print("Total tokens : ", len(token_list))
+
+print(stem_words[20:60],"\n")
+print("Total tokens : ", len(stem_words))
 
 
