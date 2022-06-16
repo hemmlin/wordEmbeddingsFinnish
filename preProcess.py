@@ -3,6 +3,7 @@ import os
 from nltk.corpus import stopwords
 import re
 from nltk.stem.snowball import SnowballStemmer
+from nltk import tokenize
 
 #nltk.download('stopwords')
 stemmer = SnowballStemmer("finnish")
@@ -19,47 +20,70 @@ def clean_text(
     """
     A method to clean text 
     """
+
     # Cleaning the urls
     string = re.sub(r'https?://\S+|www\.\S+', '', string)
 
     # Cleaning the html elements
     string = re.sub(r'<.*?>', '', string)
 
-    # Removing the punctuations
-    for x in string.lower(): 
-        if x in punctuations: 
-            string = string.replace(x, "") 
-
-    # Converting the text to lower
-    string = string.lower()
-
-    # Removing stop words
-    string = ' '.join([word for word in string.split() if word not in finnish_stopwords])
-
-    # Cleaning the whitespaces
-    string = re.sub(r'\s+', ' ', string).strip()
-
-    # Stemming the words
+    
+    sentList = tokenize.sent_tokenize(string)
+    print(sentList[:5])
+    for string in sentList:
 
 
-    return string
+        # Removing the punctuations
+        for x in string.lower(): 
+            if x in punctuations: 
+                string = string.replace(x, "") 
+
+        # Converting the text to lower
+        string = string.lower()
+
+        # Removing stop words
+        string = ' '.join([word for word in string.split() if word not in finnish_stopwords])
+
+        # Cleaning the whitespaces
+        string = re.sub(r'\s+', ' ', string).strip()
 
 
 
+    return sentList
 
-clean_txt = clean_text(raw_text)
 
-token_list = nltk.word_tokenize(clean_txt)
-# Stemming the words
 
-stem_words = []
-for w in token_list:
-    stem_words.append(stemmer.stem(w))
+def getTextAndVocab(stemming:True):
+ 
+    clean_txt = clean_text(raw_text)
 
-print(token_list[20:60],"\n")
-print("Total tokens : ", len(token_list))
+    token_list = nltk.word_tokenize(clean_txt)
 
-print(stem_words[20:60],"\n")
-print("Total tokens : ", len(stem_words))
+    if stemming:
+        # Stemming the word
+        stem_words = []
+        for w in token_list:
+            stem_words.append(stemmer.stem(w))
+        token_list = stem_words
+
+    print(token_list[20:60],"\n")
+    print("Total tokens : ", len(token_list))
+
+    Vocab=[]
+    for item in stem_words:
+        if not item in Vocab:
+            Vocab.append(item)
+    print(Vocab[:50])
+
+    word_dict = {}
+
+    for i, word in enumerate(Vocab):
+            word_dict.update({
+                word: i
+            })
+
+    print(len(Vocab))
+
+    return (token_list ,word_dict)
 
 
