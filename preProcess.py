@@ -9,14 +9,14 @@ from nltk import tokenize
 stemmer = SnowballStemmer("finnish")
 finnish_stopwords = stopwords.words('finnish')
 
-file = open(os.getcwd()+ "/archive/data_fin_gutenberg_500.txt","rt")
+file = open(os.getcwd()+ "/archive/data_fin_gutenberg_500.txt","rt", encoding = 'utf-8')
 raw_text = file.read(1000000)
 
 file.close()
 
 def clean_text(
     string: str, 
-    punctuations=r'''!()-[]{};:'"\,<>./?@#$%^&*_~''') -> str: #,
+    punctuations=r'''()-[]{};:'"\,<>/@#$%^&*_~''') -> str: #,
     """
     A method to clean text 
     """
@@ -28,28 +28,30 @@ def clean_text(
     string = re.sub(r'<.*?>', '', string)
 
     
-    sentList = tokenize.sent_tokenize(string)
-    print(sentList[:5])
-    for string in sentList:
+    
 
 
-        # Removing the punctuations
-        for x in string.lower(): 
-            if x in punctuations: 
-                string = string.replace(x, "") 
+    # Removing the punctuations
+    for x in string.lower(): 
+        if x in punctuations: 
+            string = string.replace(x, "") 
 
-        # Converting the text to lower
-        string = string.lower()
+     # Converting the text to lower
+    string = string.lower()
 
-        # Removing stop words
-        string = ' '.join([word for word in string.split() if word not in finnish_stopwords])
+     # Removing stop words
+    string = ' '.join([word for word in string.split() if word not in finnish_stopwords])
 
-        # Cleaning the whitespaces
-        string = re.sub(r'\s+', ' ', string).strip()
+     # Cleaning the whitespaces
+    string = re.sub(r'\s+', ' ', string).strip()
 
 
 
-    return sentList
+    return string
+
+
+
+
 
 
 
@@ -57,14 +59,29 @@ def getTextAndVocab(stemming:True):
  
     clean_txt = clean_text(raw_text)
 
-    token_list = nltk.word_tokenize(clean_txt)
-
+    #token_list = nltk.word_tokenize(clean_txt)
+    
+    token_list=[]
+    
+    for i in nltk.sent_tokenize(clean_txt):
+        temp = []
+         
+        # tokenize the sentence into words
+        for j in nltk.word_tokenize(i):
+            if j not in ['!','.','?']:
+                temp.append(j)
+        if len(temp)>4:
+            token_list.append(temp)
+    
     if stemming:
         # Stemming the word
-        stem_words = []
-        for w in token_list:
-            stem_words.append(stemmer.stem(w))
-        token_list = stem_words
+        for i, sentence in enumerate(token_list):
+        
+            stem_words = []
+            for w in sentence:
+                stem_words.append(stemmer.stem(w))
+            
+            token_list[i] = stem_words
 
     print(token_list[20:60],"\n")
     print("Total tokens : ", len(token_list))
