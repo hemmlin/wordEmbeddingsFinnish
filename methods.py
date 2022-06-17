@@ -83,7 +83,7 @@ def getXYskipGram(sentences, window, word_dict):
     
     return X,Y
 
-def trainModel(sentences, word_dict, window, d, cbow:True):
+def trainModel(sentences, word_dict, window, d, epochs, cbow:True):
     """This method trains CBOW algorithm based on the inputs
         sentences: list of sentences
         word_dict: dictionary of one hot indices
@@ -101,7 +101,7 @@ def trainModel(sentences, word_dict, window, d, cbow:True):
         Y = np.asarray(Y)
 
     inp = Input(shape=(np.shape(X)[1],))
-    x = Dense(units=d, activation='linear')(inp)
+    x = Dense(units=d, activation='linear')(inp) #'linear'
     x = Dense(units=np.shape(Y)[1], activation='softmax')(x)
     model = Model(inputs=inp, outputs=x)
     opt = Adam(learning_rate=0.05)
@@ -111,22 +111,24 @@ def trainModel(sentences, word_dict, window, d, cbow:True):
     history = model.fit(
         x=X, 
         y=Y, 
-        validation_split=0.3,
+        #validation_split=0.3,
         batch_size=512, 
-        epochs=1000,
+        epochs=epochs,
         verbose=1
         )
     plt.close()
     plt.plot(history.history['loss'])
-    plt.plot(history.history['val_loss'])
-    plt.legend(['train', 'test'], loc='upper left')
+    #plt.plot(history.history[''])
+    #plt.legend(['train', 'test'], loc='upper left')
     plt.title('model loss')
     plt.ylabel('categorical crossentropy')
     plt.xlabel('epoch')
     if cbow:
-        plt.savefig('trainingCBOW.png')
+        plt.savefig('plots/trainingCBOW.png')
     else:
-        plt.savefig('trainingSkip.png')
+        plt.savefig('plots/trainingSkip.png')
+    
+    model.save('model.h5')
     # Obtaining the weights from the neural network. 
     # These are the so called word embeddings
 
