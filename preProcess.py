@@ -10,14 +10,14 @@ stemmer = SnowballStemmer("finnish")
 finnish_stopwords = stopwords.words('finnish')
 
 #file = open(os.getcwd()+ "/archive/data_fin_gutenberg_500.txt","rt", encoding = 'utf-8')
-file = open(os.getcwd()+ "/wiki.txt","rt", encoding = 'utf-8')
+file = open(os.getcwd()+ "/kalevala.txt","rt", encoding = 'utf-8')
 raw_text = file.read(100000)
 
 file.close()
 
 def clean_text(
     string: str, 
-    punctuations=r'''()-[]{};:'"\,<>/@#$%^&*_~»«0123456789–''') -> str: #,
+    punctuations=r'''()-[]{};:'"\,<>/@#$%^&*_~»«0123456789–””''') -> str: #,
     """
     A method to clean text 
     """
@@ -71,7 +71,7 @@ def getTextAndVocab(stemming:True):
         for j in nltk.word_tokenize(i):
             if j not in ['!','.','?', '...', '..']:
                 temp.append(j)
-        if len(temp)>5:
+        if len(temp)>3:
             token_list.append(temp)
     
     if stemming:

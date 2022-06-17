@@ -112,7 +112,7 @@ def trainModel(sentences, word_dict, window, d, epochs, cbow:True):
         x=X, 
         y=Y, 
         #validation_split=0.3,
-        batch_size=512, 
+        batch_size=258, 
         epochs=epochs,
         verbose=1
         )
@@ -133,15 +133,24 @@ def trainModel(sentences, word_dict, window, d, epochs, cbow:True):
     # These are the so called word embeddings
 
     # The input layer 
-    weights = model.get_weights()[0]
+    if cbow:
+        weights = model.get_weights()[2]
+        print(np.shape(model.get_weights()))
+        embedding_dict = {}
+        for word in list(word_dict.keys()): 
+            embedding_dict.update({
+                word: weights[:,word_dict.get(word)]
+                })
+    else:
+        weights = model.get_weights()[0]
 
-    # Creating a dictionary to store the embeddings in. The key is a unique word and 
-    # the value is the numeric vector
-    embedding_dict = {}
-    for word in list(word_dict.keys()): 
-        embedding_dict.update({
-            word: weights[word_dict.get(word)]
-            })
+        # Creating a dictionary to store the embeddings in. The key is a unique word and 
+        # the value is the numeric vector
+        embedding_dict = {}
+        for word in list(word_dict.keys()): 
+            embedding_dict.update({
+                word: weights[word_dict.get(word)]
+                })
 
     return embedding_dict
 
