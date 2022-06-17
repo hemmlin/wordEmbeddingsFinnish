@@ -1,7 +1,13 @@
 from keras.models import Input, Model
 from keras.layers import Dense
+from tensorflow.keras.optimizers import Adam
 import numpy as np
 from tqdm import tqdm
+import matplotlib.pyplot as plt
+import os
+
+os.environ['TF_XLA_FLAGS'] = '--tf_xla_auto_jit=2'
+os.environ['TF_XLA_FLAGS'] = '--tf_xla_cpu_global_jit'
 
 def sigmoid(x):
     return 1 / (1+np.exp(-x))
@@ -77,7 +83,7 @@ def getXYskipGram(sentences, window, word_dict):
     
     return X,Y
 
-def traincbow(sentences, word_dict, window, d):
+def trainModel(sentences, word_dict, window, d, cbow:True):
     """This method trains CBOW algorithm based on the inputs
         sentences: list of sentences
         word_dict: dictionary of one hot indices
@@ -85,24 +91,42 @@ def traincbow(sentences, word_dict, window, d):
         d: dimension of the embedding vectors
     """
     n = len(word_dict)
-    X,Y = getXYcbow(sentences,window,word_dict,n)
-    X = np.asarray(X)
-    Y = np.asarray(Y)
+    if cbow:
+        X,Y = getXYcbow(sentences,window,word_dict,n)
+        X = np.asarray(X)
+        Y = np.asarray(Y)
+    else:
+        X,Y = getXYskipGram(sentences,window,word_dict)
+        X = np.asarray(X)
+        Y = np.asarray(Y)
+
     inp = Input(shape=(np.shape(X)[1],))
     x = Dense(units=d, activation='linear')(inp)
     x = Dense(units=np.shape(Y)[1], activation='softmax')(x)
     model = Model(inputs=inp, outputs=x)
-    model.compile(loss = 'categorical_crossentropy', optimizer = 'adam')
+    opt = Adam(learning_rate=0.05)
+    model.compile(loss = 'categorical_crossentropy', optimizer = opt, metrics=['accuracy'])
 
     # Optimizing the network weights
-    model.fit(
+    history = model.fit(
         x=X, 
         y=Y, 
-        batch_size=256,
+        validation_split=0.3,
+        batch_size=512, 
         epochs=1000,
-        verbose=0
+        verbose=1
         )
-
+    plt.close()
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.title('model loss')
+    plt.ylabel('categorical crossentropy')
+    plt.xlabel('epoch')
+    if cbow:
+        plt.savefig('trainingCBOW.png')
+    else:
+        plt.savefig('trainingSkip.png')
     # Obtaining the weights from the neural network. 
     # These are the so called word embeddings
 

@@ -16,7 +16,7 @@ file.close()
 
 def clean_text(
     string: str, 
-    punctuations=r'''()-[]{};:'"\,<>/@#$%^&*_~''') -> str: #,
+    punctuations=r'''()-[]{};:'"\,<>/@#$%^&*_~»«''') -> str: #,
     """
     A method to clean text 
     """
@@ -39,7 +39,7 @@ def clean_text(
      # Converting the text to lower
     string = string.lower()
 
-     # Removing stop words
+    # Removing stop words
     string = ' '.join([word for word in string.split() if word not in finnish_stopwords])
 
      # Cleaning the whitespaces
@@ -68,9 +68,9 @@ def getTextAndVocab(stemming:True):
          
         # tokenize the sentence into words
         for j in nltk.word_tokenize(i):
-            if j not in ['!','.','?']:
+            if j not in ['!','.','?', '...']:
                 temp.append(j)
-        if len(temp)>4:
+        if len(temp)>5:
             token_list.append(temp)
     
     if stemming:
@@ -83,7 +83,7 @@ def getTextAndVocab(stemming:True):
             
             token_list[i] = stem_words
 
-    print(token_list[20:60],"\n")
+    #print(token_list[20:60],"\n")
     print("Total tokens : ", len(token_list))
 
     Vocab=[]
@@ -91,7 +91,7 @@ def getTextAndVocab(stemming:True):
         for item in sent:
             if not item in Vocab:
                 Vocab.append(item)
-    print(Vocab[:50])
+    #print(Vocab[:50])
 
     word_dict = {}
 
