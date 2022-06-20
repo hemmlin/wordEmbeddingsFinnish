@@ -1,5 +1,6 @@
 from keras.models import Input, Model
-from keras.layers import Dense
+from keras.layers import Dense, Embedding, Lambda
+import keras.backend as K
 from tensorflow.keras.optimizers import Adam
 import numpy as np
 from tqdm import tqdm
@@ -21,15 +22,15 @@ def getXYcbow(sentences, window, word_dict, n):
 
     #create a sentence one-hot matrix with zero paddings
     for sentence in tqdm(sentences):
-        tempVect = np.zeros((len(sentence)+2*window, n))
+        tempVect = np.zeros((len(sentence), n))
 
         for i, word in enumerate(sentence):
-            tempVect[i+(window),  word_dict.get(word)] = 1
+            tempVect[i,  word_dict.get(word)] = 1
         
-        for i in range(len(sentence)):
+        for i in range(window,len(sentence)-window):
             # Getting the indices
-            Y.append(tempVect[i+window, :])
-            X_row= np.sum(tempVect[np.r_[i:i+window, (i+window+1):(i+2*window+1)]] ,axis=0)
+            Y.append(tempVect[i, :])
+            X_row= tempVect[np.r_[i-window:i, (i+1):(i+window+1)]]
             X.append(X_row)
 
     return X, Y
@@ -93,19 +94,28 @@ def trainModel(sentences, word_dict, window, d, epochs, cbow:True):
     n = len(word_dict)
     if cbow:
         X,Y = getXYcbow(sentences,window,word_dict,n)
+        print(np.shape(X))
         X = np.asarray(X)
         Y = np.asarray(Y)
+
+        inp = Input(shape=(2*window,np.shape(X)[2],))
+        x = Dense(units=d, activation='linear')(inp) #input_dim=np.shape(X)[1], output_dim=d, input_length=window*2)(inp)#units=d, activation='linear')(inp) #'linear'
+        x = Lambda(lambda t: K.mean(t, axis=1), output_shape=(d,))(x)
+        x = Dense(units=np.shape(Y)[1], activation='softmax')(x)
+        model = Model(inputs=inp, outputs=x)
+        opt = Adam(learning_rate=0.05)
+        model.compile(loss = 'categorical_crossentropy', optimizer = opt, metrics=['accuracy'])
     else:
         X,Y = getXYskipGram(sentences,window,word_dict)
         X = np.asarray(X)
         Y = np.asarray(Y)
 
-    inp = Input(shape=(np.shape(X)[1],))
-    x = Dense(units=d, activation='linear')(inp) #'linear'
-    x = Dense(units=np.shape(Y)[1], activation='softmax')(x)
-    model = Model(inputs=inp, outputs=x)
-    opt = Adam(learning_rate=0.05)
-    model.compile(loss = 'categorical_crossentropy', optimizer = opt, metrics=['accuracy'])
+        inp = Input(shape=(np.shape(X)[1],))
+        x = Dense(units=d, activation='linear')(inp) #'linear'
+        x = Dense(units=np.shape(Y)[1], activation='softmax')(x)
+        model = Model(inputs=inp, outputs=x)
+        opt = Adam(learning_rate=0.05)
+        model.compile(loss = 'categorical_crossentropy', optimizer = opt, metrics=['accuracy'])
 
     # Optimizing the network weights
     history = model.fit(
@@ -116,7 +126,7 @@ def trainModel(sentences, word_dict, window, d, epochs, cbow:True):
         epochs=epochs,
         verbose=1
         )
-    plt.close()
+    plt.figure()
     plt.plot(history.history['loss'])
     #plt.plot(history.history[''])
     #plt.legend(['train', 'test'], loc='upper left')
@@ -127,19 +137,24 @@ def trainModel(sentences, word_dict, window, d, epochs, cbow:True):
         plt.savefig('plots/trainingCBOW.png')
     else:
         plt.savefig('plots/trainingSkip.png')
-    
-    model.save('model.h5')
+    if cbow:
+        model.save('CBOWmodel.h5')
+    else: 
+        model.save('Skipmodel.h5')
     # Obtaining the weights from the neural network. 
     # These are the so called word embeddings
 
     # The input layer 
     if cbow:
-        weights = model.get_weights()[2]
-        print(np.shape(model.get_weights()))
+        print(np.shape(model.get_weights()[0]))
+        print(np.shape(model.get_weights()[1]))
+        print(np.shape(model.get_weights()[2]))
+        weights = model.get_weights()[0]
+        print(np.shape(weights))
         embedding_dict = {}
         for word in list(word_dict.keys()): 
             embedding_dict.update({
-                word: weights[:,word_dict.get(word)]
+                word: weights[word_dict.get(word),:]
                 })
     else:
         weights = model.get_weights()[0]

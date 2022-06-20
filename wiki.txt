@@ -263,10 +263,6 @@ Ylläpitäjät tekevät myös muita siivoustoimia, kuten poistavat roska-artikke
 
 Vakituiset käyttäjät seuraavat muutoksia itselleen tärkeisiin artikkeleihin niin sanottujen tarkkailulistojen avulla. Kaikilla sivuilla on myös muutoshistoria, josta voi seurata niiden kehitystä.
 Tutkimuksia
-Blue calendar icon with dates crossed out.svg
-	Tätä artikkelia tai sen osaa on pyydetty päivitettäväksi, koska sen sisältö on osin vanhentunut.
-Voit auttaa Wikipediaa parantamalla artikkelia. Lisää tietoa saattaa olla keskustelusivulla.
-Tarkennus: Aika vanhoja sitaatteja, kaipaisi kipeästi tasapainoista valikoimaa siitä, mitä on tutkittu vuoden 2006 jälkeen
 
 Tunnetuimmassa tutkimuksessa 15. joulukuuta 2005 tiedelehti Nature vertasi englanninkielistä Wikipediaa ja Encyclopaedia Britannicaa ja totesi niiden luonnontieteellisen sisällön lähes yhtä tarkaksi.[14] Vertailu sai tosin osakseen ankaraa kritiikkiä Britannican tekijöiltä.[15]
 
@@ -276,10 +272,7 @@ Tiettävästi ainoa suomenkielisestä Wikipediasta tehty tutkimus on diplomi-ins
 
 Wikipedian käyttäjien aktiivisuuden tutkimuksessa on tullut esille, että pitkään mukana olleet käyttäjät tekevät yhä suuremman osan muutoksista. Lisäksi yhä suurempi osa varsinkin aloittelevien käyttäjien tekemistä muutoksista kumotaan. Vuonna 2009 kokeneemmat käyttäjät peruivat jo 25 % käyttäjien tekemistä ensimmäisistä muutoksista.[18]
 Arvostelua
-Blue calendar icon with dates crossed out.svg
-	Tätä artikkelia tai sen osaa on pyydetty päivitettäväksi, koska sen sisältö on osin vanhentunut.
-Voit auttaa Wikipediaa parantamalla artikkelia. Lisää tietoa saattaa olla keskustelusivulla.
-Tarkennus: Aika vanhoja sitaatteja, kaipaisi kipeästi tasapainoista valikoimaa siitä, mitä on sanottu vuoden 2006 jälkeen.
+
 Neutraali näkökulma on yksi kirjoittamista ohjaavista käytännöistä.
 
     Pääartikkeli: Wikipedian kritiikki
@@ -296,10 +289,7 @@ Yliopistomaailman suhtautuminen Wikipediaan on pysynyt monilta osin ristiriitais
 
 2015 julkaistussa tietokonelingvistiikan tutkimuksessa havaittiin, että sisällössä usein mies on sukupuolen neutraali ja ainoastaan poikkeama tästä ilmaistaan eksplisiittisesti.[27]
 Arvioita suomenkielisestä versiosta
-Blue calendar icon with dates crossed out.svg
-	Tätä artikkelia tai sen osaa on pyydetty päivitettäväksi, koska sen sisältö on osin vanhentunut.
-Voit auttaa Wikipediaa parantamalla artikkelia. Lisää tietoa saattaa olla keskustelusivulla.
-Tarkennus: Aika vanhoja sitaatteja, kaipaisi kipeästi tasapainoista valikoimaa siitä mitä on sanottu vuoden 2006 jälkeen
+
 
 Helsingin Sanomain kuukausiliitteessä vuonna 2006 toimittaja Unto Hämäläinen suhtautui Wikipediaan myönteisesti, mutta totesi myös, että ”monet asiat on selitetty pieleen ja hutaisten”. Hämäläinen kuitenkin arvosti keskeneräisyyden tunnustamista.[28]lähde tarkemmin?
 
@@ -310,7 +300,6 @@ Ylen Prisma Studio -ohjelmassa 8. marraskuuta 2006 esiintynyt Factum Uusi tietos
 
 Tietokirjailija Petteri Järvinen kritisoi Tietokone-lehden numeron 9/2007 kolumnissa Wikipediaa. Hänen mukaansa Wikipediaa tehdään kirjoittajien ehdoilla ja vastaavasti perinteiset tietosanakirjat tehdään lukijoiden ehdoilla. Järvinen epäilee myös, että Wikipedian nopeus ei ole niin tärkeää kuin tiedon oikeellisuus. Hän vertaa tilannetta avoimen lähdekoodiin parissa työskenteleviin yhteisöihin, joissa isojenkin aukkojen havaitseminen voi kestää pitkän aikaa.[31]
 
-Helsingin Sanomat arvioitutti syksyllä 2013 yhteensä 134 suomenkielisen Wikipedian artikkelia (22. lokakuuta tallenteet) 96:lla kahdeksassa eri suomalaisessa yliopistossa työskentelevällä asiantuntijalla. He arvioivat asteikolla yhdestä (heikko) viiteen (erinomainen) artikkeleiden virheettömyyttä (keskiarvo 3,8), neutraaliutta (keskiarvo 3,5), selkeyttä (keskiarvo 3,5), tuoreutta (keskiarvo 3,1), kattavuutta ja painotuksia (keskiarvo 3,0) sekä lähteytystä (keskiarvo 2,8). Asiantuntijoiden mielestä 70 % arvioiduista artikkeleista oli virheettömiä tai lähes virheettömiä, mutta 10 % sisälsi paljon tai vakavia virheitä. Sen sijaan vain 28 % oli hyvin lähteytettyjä ja 38 % oli huonosti lähteytettyjä.[32]
 
 Helsingin Sanomien Kuukausiliitteen haastattelemat suomenkielisen Wikipedian käyttäjät nostivat ongelmista esille artikkeleihin kohdistuvan ilkivallan, juorujen ja väärän tiedon ujuttamisen artikkeleihin sekä ajoittain turhan kiivaiksi äityvät keskustelut.[33]
 Lukijat
@@ -331,10 +320,6 @@ Wikipediaa ajetaan Linux-pohjaisilla palvelimilla, joita on Floridassa 300 ja Am
 
 Wikipedian perustaja Jimmy Wales on todennut tammikuussa 2011, että sanakirjan editointi on liian vaikeaa monille ihmisille. Palvelusta yritetään tehdä helpommin muokattava, jotta se voisi levitä laajemmalle.[41]
 Rahoitus
-Blue calendar icon with dates crossed out.svg
-	Tätä artikkelia tai sen osaa on pyydetty päivitettäväksi, koska sen sisältö on osin vanhentunut.
-Voit auttaa Wikipediaa parantamalla artikkelia. Lisää tietoa saattaa olla keskustelusivulla.
-Tarkennus: Tarvitaan tuoreempia lukuja ylläpitokuluista.
 
 Wikipedia saa rahoituksensa Wikimedia Foundationin kautta. Vuoden 2005 viimeisellä neljänneksellä kulut olivat noin 321 000 dollaria (noin 250 000 euroa), josta laitteistokulut muodostivat noin 60 prosenttia, kahden palkatun ja kahden osa-aikaisen työntekijän henkilöstökulut noin 10 prosenttia.[42] Säätiö kerää varansa lahjoituksina.
 

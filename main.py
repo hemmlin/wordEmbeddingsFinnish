@@ -37,7 +37,7 @@ def plotPoints(words,dict,d,path):
         for word in words:
             coord = dict.get(word)
             plt.scatter(coord[0], coord[1])
-            plt.annotate(word, (coord[0], coord[1]), fontsize=10)
+            plt.annotate(word, (coord[0], coord[1]), fontsize=12)
     else:
         fig = plt.figure(dpi=60)
         ax = fig.gca(projection='3d')
@@ -74,9 +74,9 @@ def findNeighbours(word, embedding_dict, n):
 
 
 def main():
-    window = 5
-    d=2
-    epochs=100
+    window = 2
+    d=5
+    epochs=3000
     sentences, word_dict = getTextAndVocab(stemming=False)
     
     counts= np.zeros(len(word_dict))
@@ -92,7 +92,7 @@ def main():
     top20words= [list(word_dict.keys())[i] for i in ind]
     
     #CBOW
-    embedding_dict_cbow= trainModel(sentences, word_dict, window, d, epochs*window, cbow=True)
+    embedding_dict_cbow= trainModel(sentences, word_dict, window, d, epochs, cbow=True)
 
     plotPoints(top20words,embedding_dict_cbow,d,'plots/cbow.png')
     #SKIPGRAM 
@@ -102,7 +102,7 @@ def main():
     plotPoints(top20words,embedding_dict_skip,d,'plots/skipgram.png')
 
     print('VALMIS')
-    testWords= top20words[:20]#['äiti', 'isä', 'maa', 'talon', 'kyllä', 'suuri']
+    testWords= top20words[:10]#['äiti', 'isä', 'maa', 'talon', 'kyllä', 'suuri']
     for test in testWords:
         print(test)
         print("CBOW")
@@ -112,6 +112,18 @@ def main():
         print("Skip")
         for pair in findNeighbours(test, embedding_dict_skip,10):
             print(pair)
+    
+    testWords= ['wikipedia', 'karhu', 'tyyny', 'pasta', 'lentokone', 'filosofia']
+    for test in testWords:
+        print(test)
+        print("CBOW")
+        for pair in findNeighbours(test, embedding_dict_cbow,10):
+            print(pair)
+
+        print("Skip")
+        for pair in findNeighbours(test, embedding_dict_skip,10):
+            print(pair)
+
 
 
 
