@@ -4,6 +4,7 @@ from nltk.corpus import stopwords
 import re
 from nltk.stem.snowball import SnowballStemmer
 from nltk import tokenize
+import random
 
 #nltk.download('stopwords')
 stemmer = SnowballStemmer("finnish")
@@ -93,7 +94,7 @@ def getTextAndVocab(stemming:True):
             if not item in Vocab:
                 Vocab.append(item)
     #print(Vocab)
-
+    #random.shuffle(Vocab)
     word_dict = {}
 
     for i, word in enumerate(Vocab):

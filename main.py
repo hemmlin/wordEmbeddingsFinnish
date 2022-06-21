@@ -1,53 +1,68 @@
 
+from turtle import pu
 import numpy as np
 from preProcess import getTextAndVocab
 from methods import trainModel
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import axes3d
-from mpl_toolkits.mplot3d.art3d import Line3DCollection
 from mpl_toolkits.mplot3d.proj3d import proj_transform
 from matplotlib.text import Annotation
+from sklearn.decomposition import PCA
+import matplotlib.patches as mpatches
 
-class Annotation3D(Annotation):
-    '''Annotate the point xyz with text s'''
-
-    def __init__(self, s, xyz, *args, **kwargs):
-        Annotation.__init__(self,s, xy=(0,0), *args, **kwargs)
-        self._verts3d = xyz        
-
-    def draw(self, renderer):
-        xs3d, ys3d, zs3d = self._verts3d
-        xs, ys, zs = proj_transform(xs3d, ys3d, zs3d, renderer.M)
-        self.xy=(xs,ys)
-        Annotation.draw(self, renderer)
-
-def annotate3D(ax, s, *args, **kwargs):
-    '''add anotation text s to to Axes3d ax'''
-
-    tag = Annotation3D(s, *args, **kwargs)
-    ax.add_artist(tag)
 
 def getKeyByValue(dict, val):
     return [k for k, v in dict.items() if v==val]
 
+def getColor(word):
+    colorwords=['filosof','karh', 'lentokon','past', 'tyyn', 'wiki']
+    colors = ['green','tab:brown', 'blue', 'orange','purple' , 'red', 'black']
+    for i, match in enumerate(colorwords):
+        if match in word:
+            return colors[i]
+    return 'black'
+
 def plotPoints(words,dict,d,path):
+    green_patch = mpatches.Patch(color='green', label='philosophy')
+    brown_patch = mpatches.Patch(color='tab:brown', label='bear')
+    blue_patch = mpatches.Patch(color='blue', label='airplane')
+    orange_patch = mpatches.Patch(color='orange', label='pasta')
+    purple_patch = mpatches.Patch(color='purple', label='pillow')
+    red_patch = mpatches.Patch(color='red', label='wikipedia')
+    black_patch = mpatches.Patch(color='black', label='other')
+
+    
     if d==2:
-        plt.figure(figsize=(20, 10))
+        plt.figure(figsize=(10, 10))
     
         for word in words:
             coord = dict.get(word)
-            plt.scatter(coord[0], coord[1])
-            plt.annotate(word, (coord[0], coord[1]), fontsize=12)
+            col =  getColor(word)
+            plt.scatter(coord[0], coord[1], c=col)
+            plt.annotate(word, (coord[0], coord[1]), fontsize=10)
     else:
-        fig = plt.figure(dpi=60)
-        ax = fig.gca(projection='3d')
-        #ax.set_axis_off()
+
+        plt.figure(figsize=(10, 10))
+        pca = PCA(n_components=2)
+        print(np.shape(list(dict.values())))
+        principalComponents = pca.fit_transform(list(dict.values()))
+        print(np.shape(principalComponents))
+        dictWords=list(dict.keys())
+        print('Components explain')
+        pca2 = PCA()
+        pca2.fit_transform(list(dict.values()))
+        print(pca2.explained_variance_ratio_)
+        
         for word in words:
-            coord = dict.get(word)
-            ax.scatter(coord[0], coord[1], coord[2], marker='o', c = 'c', s = 44) 
-            annotate3D(ax, s=word, xyz=(coord[0], coord[1], coord[2]), fontsize=7, xytext=(-3,3),
-                       textcoords='offset points', ha='right',va='bottom')     
+            col =  getColor(word)
+            coord = principalComponents[dictWords.index(word),:]
+            plt.scatter(coord[0], coord[1], c=col)
+            plt.annotate(word, (coord[0], coord[1]), fontsize=10)
+            plt.xlabel('1. principal component')
+            plt.ylabel('2. principal component')
+        
+
     #plt.show()
+    plt.legend(handles=[red_patch,green_patch, brown_patch, blue_patch, orange_patch, purple_patch, black_patch])
     plt.savefig(path)
 
 def findNeighbours(word, embedding_dict, n):
@@ -75,8 +90,8 @@ def findNeighbours(word, embedding_dict, n):
 
 def main():
     window = 2
-    d=5
-    epochs=3000
+    d= 20
+    epochs=1000
     sentences, word_dict = getTextAndVocab(stemming=False)
     
     counts= np.zeros(len(word_dict))

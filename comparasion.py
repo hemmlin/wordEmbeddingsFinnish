@@ -2,7 +2,7 @@ from lib2to3.pgen2 import grammar
 import numpy as np
 from preProcess import getTextAndVocab
 from methods import trainModel
-from main import findNeighbours, getKeyByValue
+from main import findNeighbours, getKeyByValue, plotPoints
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 from mpl_toolkits.mplot3d.art3d import Line3DCollection
@@ -107,7 +107,7 @@ def meanDistanceIn(group, embedding_dict):
         for i, j in itertools.combinations(group,2):#uniqueCombBetween(group,group)[0]:
             dist.append(np.linalg.norm(embedding_dict.get(i)-embedding_dict.get(j)))
     else:
-        for (i, j) in zip(random.choices(group,k=200),random.choices(group,k=400)):
+        for (i, j) in zip(random.choices(group,k=400),random.choices(group,k=400)):
             dist.append(np.linalg.norm(embedding_dict.get(i)-embedding_dict.get(j)))
     return np.mean(dist), np.var(dist), len(dist)
 
@@ -132,7 +132,7 @@ plt.savefig('plots/zipS.png')
 
 
 
-ind = np.argpartition(counts, -10)[-10:]
+ind = np.argpartition(counts, -100)[-100:]
 
 #print([getKeyByValue(word_dict,i) for i in np.argwhere(counts>1)])
 
@@ -142,7 +142,7 @@ print([getKeyByValue(word_dict,i) for i in ind])
 
 top20words= [list(word_dict.keys())[i] for i in ind]
 
-model = keras.models.load_model('CBOWmodelN2.h5')
+model = keras.models.load_model('CBOWmodelNH20.h5')
 weights = model.get_weights()[0]
 #print(np.shape(weights))
 embedding_dict_cbow = {}
@@ -151,7 +151,7 @@ for word in list(word_dict.keys()):
         word: weights[word_dict.get(word),:]
         })
 
-model = keras.models.load_model('SkipmodelN2.h5')
+model = keras.models.load_model('SkipmodelNH20.h5')
 weights = model.get_weights()[0]
 #print(np.shape(weights))
 embedding_dict_skip = {}
@@ -178,6 +178,7 @@ def twoSampleTtest(variable, cbow):
     print('t test value for ' + variable +': ' +str(t)+'\n')
     p = scipy.stats.t.sf(abs(t), df=n1 + n2-2)
     print('p test value for ' + variable +': ' +str(p)+'\n')
+    return p
     
 
 
@@ -187,102 +188,35 @@ print('CBOW mean dist: '+ str(CBOWmean))
 skipmean=meanDistanceIn(list(word_dict.keys()), embedding_dict_skip)
 print('Skip mean dist: '+ str(skipmean))
 
-twoSampleTtest('filosofia',True)
-twoSampleTtest('filosofia',False)
-twoSampleTtest('likefilosofia',True)
-twoSampleTtest('likefilosofia',False)
+words=['filosofia','karhu', 'lentokone','pasta', 'tyyny', 'wikipedia']
 
-twoSampleTtest('karhu',True)
-twoSampleTtest('karhu',False)
-twoSampleTtest('likekarhu',True)
-twoSampleTtest('likekarhu',False)
+pValues=[]
+for word in words:
+    temp=[]
+    temp.append(twoSampleTtest(word,True))
+    if not word=='lentokone':
+        temp.append(twoSampleTtest('like'+word,True))
+    temp.append(twoSampleTtest(word,False))
+    if not word == 'lentokone':
+        temp.append(twoSampleTtest('like'+word,False))
+    pValues.append(temp)
 
-twoSampleTtest('wikipedia',True)
-twoSampleTtest('wikipedia',False)
-twoSampleTtest('likewikipedia',True)
-twoSampleTtest('likewikipedia',False)
+print(pValues)
 
-twoSampleTtest('tyyny',True)
-twoSampleTtest('tyyny',False)
-twoSampleTtest('liketyyny',True)
-twoSampleTtest('liketyyny',False)
+for test in words:
+    print(test)
+    print("CBOW")
+    for pair in findNeighbours(test, embedding_dict_cbow,4):
+        print(pair)
 
-twoSampleTtest('pasta',True)
-twoSampleTtest('pasta',False)
-twoSampleTtest('likepasta',True)
-twoSampleTtest('likepasta',False)
+    print("Skip")
+    for pair in findNeighbours(test, embedding_dict_skip,4):
+        print(pair)
 
-twoSampleTtest('lentokone',True)
-twoSampleTtest('lentokone',False)
-#twoSampleTtest('likelentokone',True)
-#twoSampleTtest('likelentokone',False)
-'''
+allContextWords=[]
+colors=[]
+for word in words:
+    allContextWords.append(list(itertools.chain(*list(csv.reader(np.loadtxt(folder+word+'.csv', dtype=str,delimiter='\n') )))))
+allContextWords=itertools.chain(*allContextWords)
 
-filosofia = list(itertools.chain(*list(csv.reader(np.loadtxt(folder+'filosofia.csv', dtype=str,delimiter='\n') ))))#np.genfromtxt(folder+'filosofia.csv', dtype=str, delimiter='\n')
-print('Filosofia in dist CBOW ' + str( meanDistanceIn(filosofia, embedding_dict_cbow)))
-filosofialike  = list(itertools.chain(*list(csv.reader(np.loadtxt(folder+'likefilosofia.csv', dtype=str,delimiter='\n') ))))
-print('Filosofia like in dist CBOW ' + str(meanDistanceIn(filosofialike, embedding_dict_cbow)))
-
-filosofia = list(itertools.chain(*list(csv.reader(np.loadtxt(folder+'filosofia.csv', dtype=str,delimiter='\n') ))))#np.genfromtxt(folder+'filosofia.csv', dtype=str, delimiter='\n')
-print('Filosofia in dist skip ' + str( meanDistanceIn(filosofia, embedding_dict_skip)))
-filosofialike  = list(itertools.chain(*list(csv.reader(np.loadtxt(folder+'likefilosofia.csv', dtype=str,delimiter='\n') ))))
-print('Filosofia like in dist skip ' + str(meanDistanceIn(filosofialike, embedding_dict_skip)))
-
-
-
-karhu = list(itertools.chain(*list(csv.reader(np.loadtxt(folder+'karhu.csv', dtype=str,delimiter='\n') ))))#np.genfromtxt(folder+'filosofia.csv', dtype=str, delimiter='\n')
-print('Karhu in dist CBOW ' + str( meanDistanceIn(karhu, embedding_dict_cbow)))
-karhulike  = list(itertools.chain(*list(csv.reader(np.loadtxt(folder+'likekarhu.csv', dtype=str,delimiter='\n') ))))
-print('Karhu like in dist CBOW ' + str(meanDistanceIn(karhulike, embedding_dict_cbow)))
-
-print('Karhu in dist skip ' + str( meanDistanceIn(karhu, embedding_dict_skip)))
-
-print('Karhu like in dist skip' + str(meanDistanceIn(karhulike, embedding_dict_skip)))
-
-#lentsikka
-
-karhu = list(itertools.chain(*list(csv.reader(np.loadtxt(folder+'lentokone.csv', dtype=str,delimiter='\n') ))))#np.genfromtxt(folder+'filosofia.csv', dtype=str, delimiter='\n')
-print('LK in dist CBOW ' + str( meanDistanceIn(karhu, embedding_dict_cbow)))
-#karhulike  = list(itertools.chain(*list(csv.reader(np.loadtxt(folder+'likelentokone.csv', dtype=str,delimiter='\n') ))))
-#print('LK like in dist CBOW ' + str(meanDistanceIn(karhulike, embedding_dict_cbow)))
-
-print('LK in dist skip ' + str( meanDistanceIn(karhu, embedding_dict_skip)))
-
-#print('LK like in dist skip' + str(meanDistanceIn(karhulike, embedding_dict_skip)))
-
-#pasta
-
-karhu = list(itertools.chain(*list(csv.reader(np.loadtxt(folder+'pasta.csv', dtype=str,delimiter='\n') ))))#np.genfromtxt(folder+'filosofia.csv', dtype=str, delimiter='\n')
-print('Pasta in dist CBOW ' + str( meanDistanceIn(karhu, embedding_dict_cbow)))
-karhulike  = list(itertools.chain(*list(csv.reader(np.loadtxt(folder+'likepasta.csv', dtype=str,delimiter='\n') ))))
-print('Pasta like in dist CBOW ' + str(meanDistanceIn(karhulike, embedding_dict_cbow)))
-
-print('Pasta in dist skip ' + str( meanDistanceIn(karhu, embedding_dict_skip)))
-
-print('Pasta like in dist skip' + str(meanDistanceIn(karhulike, embedding_dict_skip)))
-
-
-#tyyny
-
-karhu = list(itertools.chain(*list(csv.reader(np.loadtxt(folder+'tyyny.csv', dtype=str,delimiter='\n') ))))#np.genfromtxt(folder+'filosofia.csv', dtype=str, delimiter='\n')
-print('Tyyny in dist CBOW ' + str( meanDistanceIn(karhu, embedding_dict_cbow)))
-karhulike  = list(itertools.chain(*list(csv.reader(np.loadtxt(folder+'liketyyny.csv', dtype=str,delimiter='\n') ))))
-print('Tyyny like in dist CBOW ' + str(meanDistanceIn(karhulike, embedding_dict_cbow)))
-
-print('Tyyny in dist skip ' + str( meanDistanceIn(karhu, embedding_dict_skip)))
-
-print('Tyyny like in dist skip' + str(meanDistanceIn(karhulike, embedding_dict_skip)))
-
-#wiki
-
-karhu = list(itertools.chain(*list(csv.reader(np.loadtxt(folder+'wikipedia.csv', dtype=str,delimiter='\n') ))))#np.genfromtxt(folder+'filosofia.csv', dtype=str, delimiter='\n')
-print('Wiki in dist CBOW ' + str( meanDistanceIn(karhu, embedding_dict_cbow)))
-karhulike  = list(itertools.chain(*list(csv.reader(np.loadtxt(folder+'likewikipedia.csv', dtype=str,delimiter='\n') ))))
-print('Wiki like in dist CBOW ' + str(meanDistanceIn(karhulike, embedding_dict_cbow)))
-
-print('Wiki in dist skip ' + str( meanDistanceIn(karhu, embedding_dict_skip)))
-
-print('Wiki like in dist skip' + str(meanDistanceIn(karhulike, embedding_dict_skip)))
-
-'''
-
+plotPoints(allContextWords, embedding_dict_skip, np.shape(weights)[1], 'plots/embeddingSpaceSkip20')

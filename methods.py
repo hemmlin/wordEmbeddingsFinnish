@@ -22,16 +22,18 @@ def getXYcbow(sentences, window, word_dict, n):
 
     #create a sentence one-hot matrix with zero paddings
     for sentence in tqdm(sentences):
-        tempVect = np.zeros((len(sentence), n))
+        if len(sentence)>2*window:
+            tempVect = np.zeros((len(sentence), n))
 
-        for i, word in enumerate(sentence):
-            tempVect[i,  word_dict.get(word)] = 1
-        
-        for i in range(window,len(sentence)-window):
-            # Getting the indices
-            Y.append(tempVect[i, :])
-            X_row= tempVect[np.r_[i-window:i, (i+1):(i+window+1)]]
-            X.append(X_row)
+            for i, word in enumerate(sentence):
+                tempVect[i,  word_dict.get(word)] = 1
+            #print(np.argwhere(tempVect==1))
+            for i in range(window,len(sentence)-window):
+                # Getting the indices
+                Y.append(tempVect[i, :])
+                X_row= tempVect[np.r_[(i-window):i, (i+1):(i+window+1)],:]
+                
+                X.append(X_row)
 
     return X, Y
 
@@ -94,19 +96,21 @@ def trainModel(sentences, word_dict, window, d, epochs, cbow:True):
     n = len(word_dict)
     if cbow:
         X,Y = getXYcbow(sentences,window,word_dict,n)
+        print('XDATACBOW')
         print(np.shape(X))
         X = np.asarray(X)
         Y = np.asarray(Y)
 
         inp = Input(shape=(2*window,np.shape(X)[2],))
         x = Dense(units=d, activation='linear')(inp) #input_dim=np.shape(X)[1], output_dim=d, input_length=window*2)(inp)#units=d, activation='linear')(inp) #'linear'
-        x = Lambda(lambda t: K.mean(t, axis=1), output_shape=(d,))(x)
-        x = Dense(units=np.shape(Y)[1], activation='softmax')(x)
-        model = Model(inputs=inp, outputs=x)
+        lam = Lambda(lambda t: K.mean(t, axis=1), output_shape=(d,))(x)
+        out = Dense(units=np.shape(Y)[1], activation='softmax')(lam)
+        model = Model(inputs=inp, outputs=out)
         opt = Adam(learning_rate=0.05)
         model.compile(loss = 'categorical_crossentropy', optimizer = opt, metrics=['accuracy'])
     else:
         X,Y = getXYskipGram(sentences,window,word_dict)
+        print('XDATASkip')
         X = np.asarray(X)
         Y = np.asarray(Y)
 
@@ -122,7 +126,7 @@ def trainModel(sentences, word_dict, window, d, epochs, cbow:True):
         x=X, 
         y=Y, 
         #validation_split=0.3,
-        batch_size=258, 
+        batch_size=20,#256 
         epochs=epochs,
         verbose=1
         )
