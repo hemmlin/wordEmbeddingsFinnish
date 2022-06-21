@@ -76,7 +76,7 @@ def getTextAndVocab(stemming:True):
             token_list.append(temp)
     
     if stemming:
-        # Stemming the word
+        # Stemming the words if stemming=True
         for i, sentence in enumerate(token_list):
         
             stem_words = []
@@ -88,6 +88,7 @@ def getTextAndVocab(stemming:True):
     print(token_list[:30],"\n")
     print("Total tokens : ", len(token_list))
 
+    # Finding all the unique words in data
     Vocab=[]
     for sent in token_list:
         for item in sent:
@@ -95,6 +96,8 @@ def getTextAndVocab(stemming:True):
                 Vocab.append(item)
     #print(Vocab)
     #random.shuffle(Vocab)
+
+    # Creating an dictionary to get the word index (index of one-hot coding) from the string
     word_dict = {}
 
     for i, word in enumerate(Vocab):

@@ -25,6 +25,7 @@ def inString(string, match):
     return match_list      
 
 def classifyDictionary(vocabulary):
+    #help function to annotate some semantic and syntatic sub groups
     filosofia = []
     likefilosofia = []
     karhu = []
@@ -101,6 +102,9 @@ def uniqueCombBetween(list_1, list_2):
     return unique_combinations
 
 def meanDistanceIn(group, embedding_dict):
+    # calculates the distances within a given group. 
+    # with large groups samples 400 pairs
+    # returns mean, variance and the numer of observations used to calculate these statistics
     dist=[]
     if len(group)< 100:
         #print(uniqueCombBetween(group,group)[0])
@@ -121,6 +125,7 @@ for sent in sentences:
     for item in sent:
         counts[word_dict.get(item)]+=1
 
+# Plot the frequncies (Zipf's law)
 plt.plot(np.arange(len(counts)), sorted(counts,reverse=True))
 plt.yscale('log')
 plt.xscale('log')
@@ -142,6 +147,7 @@ print([getKeyByValue(word_dict,i) for i in ind])
 
 top20words= [list(word_dict.keys())[i] for i in ind]
 
+# Load models from the current folder
 model = keras.models.load_model('CBOWmodelNH20.h5')
 weights = model.get_weights()[0]
 #print(np.shape(weights))
@@ -162,6 +168,7 @@ for word in list(word_dict.keys()):
 
 
 def twoSampleTtest(variable, cbow):
+    # calculates the student's T test and returns the P values
     data = list(itertools.chain(*list(csv.reader(np.loadtxt(folder+variable+'.csv', dtype=str,delimiter='\n') ))))
     
     if cbow:
@@ -203,6 +210,7 @@ for word in words:
 
 print(pValues)
 
+# some nearest neighbours
 for test in words:
     print(test)
     print("CBOW")
@@ -219,4 +227,5 @@ for word in words:
     allContextWords.append(list(itertools.chain(*list(csv.reader(np.loadtxt(folder+word+'.csv', dtype=str,delimiter='\n') )))))
 allContextWords=itertools.chain(*allContextWords)
 
+# plot embedding space
 plotPoints(allContextWords, embedding_dict_skip, np.shape(weights)[1], 'plots/embeddingSpaceSkip20')

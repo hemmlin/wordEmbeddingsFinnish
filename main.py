@@ -22,6 +22,8 @@ def getColor(word):
     return 'black'
 
 def plotPoints(words,dict,d,path):
+    # Plots the words in the embedding space 
+    # and projects them to the 2 first principa components if the dimension is >2
     green_patch = mpatches.Patch(color='green', label='philosophy')
     brown_patch = mpatches.Patch(color='tab:brown', label='bear')
     blue_patch = mpatches.Patch(color='blue', label='airplane')
@@ -40,7 +42,7 @@ def plotPoints(words,dict,d,path):
             plt.scatter(coord[0], coord[1], c=col)
             plt.annotate(word, (coord[0], coord[1]), fontsize=10)
     else:
-
+        #PCA and visualization on the 2. first components
         plt.figure(figsize=(10, 10))
         pca = PCA(n_components=2)
         print(np.shape(list(dict.values())))
@@ -66,6 +68,8 @@ def plotPoints(words,dict,d,path):
     plt.savefig(path)
 
 def findNeighbours(word, embedding_dict, n):
+    # Finds the nearest neighbours of a word in the embedding space.
+    # Using euclidean distance
     topN = []
     for i in range(n):
         topN.append('')
@@ -89,11 +93,13 @@ def findNeighbours(word, embedding_dict, n):
 
 
 def main():
+    # training parameters
     window = 2
     d= 20
     epochs=1000
     sentences, word_dict = getTextAndVocab(stemming=False)
     
+    #calculating frequencies of words
     counts= np.zeros(len(word_dict))
     for sent in sentences:
         for item in sent:
@@ -106,17 +112,19 @@ def main():
 
     top20words= [list(word_dict.keys())[i] for i in ind]
     
-    #CBOW
+    # training the CBOW model
     embedding_dict_cbow= trainModel(sentences, word_dict, window, d, epochs, cbow=True)
 
     plotPoints(top20words,embedding_dict_cbow,d,'plots/cbow.png')
-    #SKIPGRAM 
+
+    #training Skip-gram model
     embedding_dict_skip= trainModel(sentences, word_dict, window, d, epochs, cbow=False)
     
     #print(zip([getKeyByValue(word_dict,i) for i in ind] , [counts[i] for i in ind]))
     plotPoints(top20words,embedding_dict_skip,d,'plots/skipgram.png')
 
     print('VALMIS')
+    # Testing the models by printing some nearest neighbours
     testWords= top20words[:10]#['äiti', 'isä', 'maa', 'talon', 'kyllä', 'suuri']
     for test in testWords:
         print(test)
